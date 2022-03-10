@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{self, prelude::*, BufReader};
+use std::io::{self, prelude::*, BufReader, BufWriter};
 use soup::prelude::*;
 use serde::Serialize;
 use regex::Regex;
@@ -27,7 +27,10 @@ fn main() -> io::Result<()> {
         //println!("{}", serde_json::to_string_pretty(&fourletters)?);
         
     }
-    println!("{}", serde_json::to_string_pretty(&fourlettersjson)?);
+    //println!("{}", serde_json::to_string_pretty(&fourlettersjson)?);
+    let write_file = File::create("out.json").unwrap();
+    let mut writer = BufWriter::new(&write_file);
+    writeln!(writer, "{}", serde_json::to_string_pretty(&fourlettersjson)?).unwrap();
     Ok(())
 }
 
@@ -46,10 +49,14 @@ fn find_clues(line: &String) -> Vec<String> {
         //println!("{}", i.text());
         let re = Regex::new(r"([^(]+)\s+\([^)]+\)").unwrap();
         let boo = &i.text();
-        let capture = re.captures(boo).unwrap();
+        println!("----{}----", &line);
+        println!("{}", boo);
+        if let Some(capture) = re.captures(boo) {
+            result.push(capture.get(1).unwrap().as_str().to_string())
+        }
         //println!("{}", capture.get(1).unwrap().as_str());
         //result.push(i.text().clone());
-        result.push(capture.get(1).unwrap().as_str().to_string())
+        
         }
         j = j + 1;
      } 
