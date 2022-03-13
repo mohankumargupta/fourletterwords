@@ -10,7 +10,7 @@ struct FourLetters {
     clues: Vec<String>
 }
 
-fn 001_main() -> io::Result<()> {
+fn main_001() -> io::Result<()> {
     let file = File::open("4-letter-words.txt")?;
     let reader = BufReader::new(file);
  
