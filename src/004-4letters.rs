@@ -24,14 +24,16 @@ struct FourLetterWordsResponse {
   tags: Vec<String>,
 }
 
-fn main() ->  io::Result<()> {
-    let file = File::open("out4.json")?;
+fn main_004() ->  io::Result<()> {
+    let file = File::open("out3.json")?;
     let reader = BufReader::new(file);
     let input: Vec<FourLetters> = serde_json::from_reader(reader).unwrap();
-    let output: Vec<FourLetters> = input.into_iter().filter(|item: &FourLetters|  item.clues.len() != 0
-    ).collect();
+    let output: Vec<FourLetters> = input.into_iter().map(|mut item: FourLetters|  {
+      item.clues.retain(|item: &String| !item.contains("_"));  
+      return item;   
+    }).collect();
     
-    let write_file = File::create("out5.json").unwrap();
+    let write_file = File::create("out4.json").unwrap();
     let mut writer = BufWriter::new(&write_file);
     writeln!(writer, "{}", serde_json::to_string_pretty(&output)?).unwrap();
 
